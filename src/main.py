@@ -5,8 +5,6 @@ import time
 import wave
 import serial
 from playsound import playsound
-import keyboard
-import threading
 
 ## Serial Port ##
 port = 'COM6'  # Change this to your specific port
