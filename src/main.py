@@ -1,9 +1,17 @@
 import os
 import laion_clap
 import pyaudio
-import numpy as np
 import time
 import wave
+import serial
+from playsound import playsound
+import keyboard
+import threading
+
+## Serial Port ##
+port = 'COM6'  # Change this to your specific port
+baud_rate = 9600
+serial_on = False # turn on to transfer
 
 ## Audio Recording Parameters ##
 CHUNK = 1024  # Number of frames per buffer
@@ -13,14 +21,13 @@ RATE_HZ = 48000  # Sampling rate in Hz
 SEGMENT_DURATION_SECONDS = 2  # Segment duration in seconds
 OVERLAP_SECONDS = 0  # Overlap duration in seconds
 audio_dir = os.path.join(os.path.dirname(__file__), os.pardir, 'audio')
-WAV_FILENAME = "temp_audio_segment.wav"
+WAV_PATH = os.path.join(audio_dir, "temp_audio_segment.wav")
 
 ## Functions ##
 def classify_audio(model, class_embeds, audio_path = 'glass/glass2.mp3'):
-    # audio_file = [
-    #     os.path.join(audio_dir, audio_path)
-    # ]
-    audio_file = [audio_path]
+    audio_file = [
+        audio_path
+    ]
     audio_embed = model.get_audio_embedding_from_filelist(x = audio_file, use_tensor=False)
 
     max_sim = 0
@@ -36,7 +43,7 @@ def classify_audio(model, class_embeds, audio_path = 'glass/glass2.mp3'):
             max_sim = sim
             idx = i
 
-    print(classes[idx])
+    return classes[idx], idx
 
 def get_audio_segment(stream, duration):
     segment_frames = int(RATE_HZ * duration)
@@ -44,7 +51,6 @@ def get_audio_segment(stream, duration):
     while len(frames)*CHUNK < segment_frames:
         data = stream.read(CHUNK)
         frames.append(data)
-        # print(len(frames)*len(data), segment_frames)
     return b''.join(frames)
 
 def save_wav_file(filename, audio_data):
@@ -68,8 +74,6 @@ classes = [
 
 class_embeds = model.get_text_embedding(classes)
 
-
-
 audio = pyaudio.PyAudio()
 
 # Open stream
@@ -79,17 +83,35 @@ stream = audio.open(format=FORMAT,
                 input=True,
                 frames_per_buffer=CHUNK)
 
+# Start serial
+if serial_on:
+    ser = serial.Serial(port, baud_rate, timeout=1)
 print("Starting audio processing")
+
 try:
     while True:
         audio_segment = get_audio_segment(stream, SEGMENT_DURATION_SECONDS)
-        save_wav_file(WAV_FILENAME, audio_segment)
+        save_wav_file(WAV_PATH, audio_segment)
         # Classify the saved .wav file
-        classify_audio(model, class_embeds, WAV_FILENAME)
+        result, idx = classify_audio(model, class_embeds, WAV_PATH)
+        print(result)
+        # play sound effect
+        if result != 'others':
+            effect_path = os.path.join(audio_dir, 'effects', f'{result}.wav')
+            playsound(effect_path)
+        # transfer result via serial
+        data_to_send = str(idx).encode()  # Data to be sent, convert to bytes
+        if serial_on:
+            ser.write(data_to_send)
+        print(f"Sent: {data_to_send.decode()}")
+
         time.sleep(SEGMENT_DURATION_SECONDS - OVERLAP_SECONDS)
+
 except KeyboardInterrupt:
     print("Stopping audio processing")
 finally:
     stream.stop_stream()
     stream.close()
     audio.terminate()
+    if serial_on:
+        ser.close()
