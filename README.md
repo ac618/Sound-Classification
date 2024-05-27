@@ -1,6 +1,7 @@
 # Sound-Classification
 ## Important Notice
-Using wsl or linux to run may fail to access the microphone!
+Using wsl to run may fail to access the microphone via pyaudio package!
+(I'm not sure about linux, the code will work as long as pyaudio works.)
 ## Setup Environment
 ### CLAP
 ```
