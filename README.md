@@ -1,4 +1,6 @@
 # Sound-Classification
+## Important Notice
+Using wsl or linux to run may fail to access the microphone!
 ## Setup Environment
 ### CLAP
 ```
@@ -9,12 +11,18 @@ $ pip install torch torchvision torchaudio -f https://download.pytorch.org/whl/t
 $ pip install -r requirements.txt
 ```
 ### record audio
-`pip install pyaudio`
+```
+$ pip install pyaudio
+```
 ### serial
-`pip install pyserial`
+```
+S pip install pyserial
+```
 ### play audio
-`pip install --upgrade wheel`
-`pip install playsound`
+```
+$ pip install --upgrade wheel
+$ pip install playsound
+```
 ## Setup code
 ## Settings
 In main.py:
