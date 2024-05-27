@@ -31,4 +31,10 @@ In main.py:
     * Microphone format in Windows: Sound settings -> Input -> Microphone array -> Format
     * Using wsl or linux to run may fail to access the microphone
 ## Run
+### PC side
 ./src/main.py
+### Arduino side
+## Reference
+Wu*, Y. *et al.* (2023) ‘Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption Augmentation’, in *IEEE International Conference on Acoustics, Speech and Signal Processing, ICASSP*.
+
+Chen, K. *et al.* (2022) ‘HTS-AT: A Hierarchical Token-Semantic Audio Transformer for Sound Classification and Detection’, in *IEEE International Conference on Acoustics, Speech and Signal Processing, ICASSP*.
