@@ -34,6 +34,7 @@ In main.py:
 ### PC side
 ./src/main.py
 ### Arduino side
+run ./Arduino/LED_blink.ino
 ## Reference
 Wu*, Y. *et al.* (2023) ‘Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption Augmentation’, in *IEEE International Conference on Acoustics, Speech and Signal Processing, ICASSP*.
 
