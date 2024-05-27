@@ -13,5 +13,12 @@ pip install pyserial
 ### play audio
 pip install --upgrade wheel
 pip install playsound
+## Setup code
+## Settings
+In main.py:
+* you may need to change the serial port and baud_rate at line 10, 11 and set serial_on to True in line 12
+* you may need to change the microphone format in line 16~18
+    * Microphone format in Windows: Sound settings -> Input -> Microphone array -> Format
+    * Using wsl or linux to run may fail to access the microphone
 ## Run
 ./src/main.py
